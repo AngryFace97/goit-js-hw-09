@@ -17,16 +17,23 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDate) {
-    const currentDate = new Date();
-    if (selectedDate[0] <= currentDate) {
-      startBtn.disabled = true;
+  onClose(selectedDates) {
+    const currentDate = new Date().getTime();
+    const selectedDate = selectedDates[0].getTime();
+
+    if (selectedDate <= currentDate) {
       Notiflix.Notify.failure('Please choose a date in the future');
+      startBtn.disabled = true;
     } else {
       startBtn.disabled = false;
+      clearInterval(counterDown);
+      dataDays.innerHTML = '00';
+      dataHours.innerHTML = '00';
+      dataMinutes.innerHTML = '00';
+      dataSeconds.innerHTML = '00';
     }
   },
-};
+}
 
 flatpickr(dateChosen, options);
 
