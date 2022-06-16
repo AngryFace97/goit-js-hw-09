@@ -19,35 +19,22 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {
-    const currentDate = new Date().getTime();
-    const selectedDate = selectedDates[0].getTime();
-
-    if (selectedDate <= currentDate) {
-      Notiflix.Notify.failure('Please choose a date in the future');
+  onClose(selectedDate) {
+    if (selectedDate[0] <= new Date()) {
       startBtn.disabled = true;
+      Notiflix.Notify.failure('Please choose a date in the future');
     } else {
       startBtn.disabled = false;
-      clearInterval(counterDown);
-      dataDays.innerHTML = '00';
-      dataHours.innerHTML = '00';
-      dataMinutes.innerHTML = '00';
-      dataSeconds.innerHTML = '00';
-    }
-  },
-}
 
-flatpickr(dateChosen, options);
-
-startBtn.addEventListener('click', countdownTime);
+      startBtn.addEventListener('click', countdownTime);
 
 function countdownTime() {
   timer = setInterval(() => {
     startBtn.disabled = true;
 
-    const pickedDateMs = new Date(dateChosen.value).getTime();
+    const dateChosenMs = new Date(dateChosen.value.replace(/-/g, '/')).getTime();
     const now = new Date().getTime();
-    const timeLeft = pickedDateMs - now;
+    const timeLeft = dateChosenMs - now;
 
     const { days, hours, minutes, seconds } = convertMs(timeLeft);
 
@@ -83,4 +70,9 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
+      }
+    }
+  }
 }
+
+flatpickr(dateChosen, options);
